@@ -2,7 +2,6 @@ package router
 
 import (
 	"fmt"
-	"github.com/julienschmidt/httprouter"
 	"joi-energy-golang/api"
 	"joi-energy-golang/endpoints/priceplans"
 	"joi-energy-golang/endpoints/readings"
@@ -11,6 +10,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 func NewServer() *http.Server {
@@ -32,7 +33,7 @@ func addRoutes(r *httprouter.Router) {
 		&meterReadings,
 	)
 
-	readingsHandler := readings.NewHandler(&meterReadings)
+	readingsHandler := readings.NewHandler(readings.NewService(&meterReadings))
 	pricePlanHandler := priceplans.NewHandler(priceplans.NewService(&pricePlans, &accounts))
 
 	r.POST("/readings/store", readingsHandler.StoreReadings)
